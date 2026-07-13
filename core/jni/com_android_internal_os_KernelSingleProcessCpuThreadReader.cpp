@@ -71,7 +71,11 @@ public:
     size_t getCpuFrequencyCount() {
         std::optional<std::vector<std::vector<uint32_t>>> cpuFreqs = android::bpf::getCpuFreqs();
         if (!cpuFreqs) {
-            ALOGE("Cannot obtain CPU frequency count");
+            static bool logged = false;
+            if (!logged) {
+                ALOGD("Cannot obtain CPU frequency count");
+                logged = true;
+            }
             return 0;
         }
 
@@ -215,7 +219,11 @@ static jboolean readProcessCpuUsage(JNIEnv *env, jclass, jint pid,
                                                                 {DEFAULT_THREAD_AGGREGATION_KEY,
                                                                  SELECTED_THREAD_AGGREGATION_KEY});
     if (!data) {
-        ALOGE("Cannot read thread CPU times for PID %d", pid);
+        static bool logged = false;
+        if (!logged) {
+            ALOGD("Cannot read thread CPU times for PID %d", pid);
+            logged = true;
+        }
         return false;
     }
 
